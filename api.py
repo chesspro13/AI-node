@@ -26,18 +26,20 @@ llm = Llama(
   n_gpu_layers=24         # The number of layers to offload to GPU, if you have GPU acceleration available
 )
 
-inUse = False
+active = True
+available = True
 
 @api.get("/status")
 async def get_status( request: Request ):
-  return { "model_loaded": True, "avaliable": !inUse }  
+  return { "status": active, "mode": "gpu", "avaliable": available }  
 
 @api.post("/generate")
 async def generate_text( request: Request):
-  if inUse:
+  if not available:
       return { "error": "Node not yet available" }
 
-  inUse = True
+  available = False
+  
   data = await request.json()
   print( json.dumps( data["data"], indent=1))
   prompt = data.get("data", "")["package"]
@@ -99,6 +101,5 @@ async def generate_text( request: Request):
     # stop=["</s>"],   # Example stop token - not necessarily correct for this specific model! Please check before using.
     # echo=True        # Whether to echo the prompt
   )
-  inUse = False
-
+  available = True
   return {"Feedback": output["choices"][0]["message"]["content"]}
