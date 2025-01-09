@@ -1,0 +1,8 @@
+services:
+  AI-NODE:
+    image: "chesspro13/ai-node:latest"
+    ports:
+      - "8000:8000"
+    environment:
+      - API_MODEL=value
+      - ORIGIN=value

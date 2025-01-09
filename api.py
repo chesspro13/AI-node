@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 api = FastAPI()
+model_path = None
+gpu_layers = None
 
 origins = [
     os.getenv("ORIGIN"),
@@ -17,13 +19,22 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
+if os.getenv("AM_I_IN_A_DOCKER_CONTAINER") == "True":
+    model_path = "/model/"
+else:
+    model_path = "../../llamAPI/models/"
+
+if os.getenv("GPU_ENABLED") == "True":
+    gpu_layers = os.getenv("GPU_LAYERS")
+else:
+    gpu_layers = 0
+
 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
 llm = Llama(
-    model_path="../llamAPI/models/"
-    + os.getenv("API_MODEL"),  # Download the model file first
+    model_path + os.getenv("API_MODEL"),  # Download the model file first
     n_ctx=32768,  # The max sequence length to use - note that longer sequence lengths require much more resources
     n_threads=8,  # The number of CPU threads to use, tailor to your system and the resulting performance
-    n_gpu_layers=24,  # The number of layers to offload to GPU, if you have GPU acceleration available
+    n_gpu_layers=gpu_layers,  # The number of layers to offload to GPU, if you have GPU acceleration available
 )
 
 active = True
@@ -100,5 +111,5 @@ async def generate_text(request: Request):
         )
         available = True
         return {"Feedback": output["choices"][0]["message"]["content"]}
-    except e:
+    except:
         return {"error": "Something went wrong"}

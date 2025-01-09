@@ -164,3 +164,4 @@ cython_debug/
 llamaPython/
 keys/
 start.sh
+compose.yaml
