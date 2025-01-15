@@ -34,7 +34,7 @@ llm = Llama(
     model_path + os.getenv("API_MODEL"),  # Download the model file first
     n_ctx=32768,  # The max sequence length to use - note that longer sequence lengths require much more resources
     n_threads=8,  # The number of CPU threads to use, tailor to your system and the resulting performance
-    n_gpu_layers=gpu_layers,  # The number of layers to offload to GPU, if you have GPU acceleration available
+    n_gpu_layers= 20,#gpu_layers,  # The number of layers to offload to GPU, if you have GPU acceleration available
 )
 
 active = True

@@ -6,3 +6,5 @@ services:
     environment:
       - API_MODEL=value
       - ORIGIN=value
+    volumes:
+      - /path/to/llm:/model/
