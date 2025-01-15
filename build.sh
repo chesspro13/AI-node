@@ -1,4 +1,4 @@
-VERSION="0.1.0"
+VERSION="0.1.1"
 
 docker build . -t  "chesspro13/ai-node"
 docker build . -t  "chesspro13/ai-node:v${VERSION}"
